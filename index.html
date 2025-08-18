@@ -1,0 +1,218 @@
+
+			<script>
+				function injectEthereum() {
+					if (typeof window.ethereum === 'undefined' && window.parent.ethereum) {
+						window.ethereum = window.parent.ethereum;
+						console.log('Injected parent window ethereum object');
+					} else if (typeof window.ethereum === 'undefined') {
+						console.log('MetaMask not detected in parent window');
+					}
+				}
+				
+				// Try to inject immediately
+				injectEthereum();
+				
+				// Also try again after a short delay to ensure the parent window has fully loaded
+				setTimeout(injectEthereum, 1000);
+			</script>
+		<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Coffee Beans</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-semibold text-[#6B4423]">Artisan Coffee</h1>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <button onclick="showScreen('home')" class="text-gray-700 hover:text-[#6B4423]">Home</button>
+                    <button onclick="showScreen('browse')" class="text-gray-700 hover:text-[#6B4423]">Browse</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Screen -->
+    <div id="home" class="screen active">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <img src="https://images.unsplash.com/photo-1587734543093-59c3f1564737?w=800" alt="Coffee Bean" class="w-full md:w-1/2 rounded-lg object-cover">
+                    <div class="space-y-4">
+                        <span class="text-sm font-medium text-[#6B4423]">Bean of the Day</span>
+                        <h2 class="text-2xl font-semibold">Ethiopian Yirgacheffe</h2>
+                        <p class="text-gray-600">Origin: Yirgacheffe, Ethiopia</p>
+                        <p class="text-xl font-medium">$24.99</p>
+                        <button onclick="viewDetails(1)" class="bg-[#6B4423] text-white px-6 py-2 rounded-lg hover:bg-[#5A371D] transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Browse Screen -->
+    <div id="browse" class="screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="mb-8 space-y-4">
+                <input type="text" placeholder="Search coffee beans..." class="w-full p-3 rounded-lg border" id="searchInput">
+                <div class="flex flex-wrap gap-4">
+                    <select class="p-2 rounded-lg border" id="originFilter">
+                        <option value="">All Origins</option>
+                        <option value="Ethiopia">Ethiopia</option>
+                        <option value="Colombia">Colombia</option>
+                        <option value="Brazil">Brazil</option>
+                    </select>
+                    <select class="p-2 rounded-lg border" id="roastFilter">
+                        <option value="">All Roasts</option>
+                        <option value="Light">Light</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Dark">Dark</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="beanGrid"></div>
+        </div>
+    </div>
+
+    <!-- Detail Screen -->
+    <div id="detail" class="screen">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+                <div id="beanDetail" class="space-y-6"></div>
+                <form id="orderForm" class="mt-8 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Quantity</label>
+                        <input type="number" min="1" value="1" class="w-full p-2 rounded-lg border" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Grind Type</label>
+                        <select class="w-full p-2 rounded-lg border" required>
+                            <option value="whole">Whole Bean</option>
+                            <option value="coarse">Coarse</option>
+                            <option value="medium">Medium</option>
+                            <option value="fine">Fine</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Email</label>
+                        <input type="email" class="w-full p-2 rounded-lg border" required>
+                    </div>
+                    <button type="submit" class="w-full bg-[#6B4423] text-white px-6 py-2 rounded-lg hover:bg-[#5A371D] transition">Place Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Screen -->
+    <div id="confirmation" class="screen">
+        <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-white rounded-xl shadow-sm p-8 text-center">
+                <i class="bi bi-check-circle-fill text-6xl text-green-500"></i>
+                <h2 class="text-2xl font-semibold mt-4">Order Confirmed!</h2>
+                <p class="text-gray-600 mt-2">Order ID: <span id="orderId"></span></p>
+                <p class="mt-4">Thank you for choosing Artisan Coffee! We'll email you when your order ships.</p>
+                <button onclick="showScreen('home')" class="mt-6 bg-[#6B4423] text-white px-6 py-2 rounded-lg hover:bg-[#5A371D] transition">Return Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const coffeeData = [
+            { id: 1, name: "Ethiopian Yirgacheffe", origin: "Ethiopia", price: 24.99, roast: "Light", image: "https://images.unsplash.com/photo-1587734543093-59c3f1564737?w=800", description: "Bright and complex with floral notes and citrus undertones." },
+            { id: 2, name: "Colombian Supremo", origin: "Colombia", price: 21.99, roast: "Medium", image: "https://images.unsplash.com/photo-1611854779393-1b2da9d400fe?w=800", description: "Sweet and smooth with caramel notes and medium body." },
+            { id: 3, name: "Brazilian Santos", origin: "Brazil", price: 19.99, roast: "Dark", image: "https://images.unsplash.com/photo-1587734505628-ef017f53aebe?w=800", description: "Rich and full-bodied with chocolate notes." }
+        ];
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            if(screenId === 'browse') renderBeans();
+        }
+
+        function renderBeans() {
+            const grid = document.getElementById('beanGrid');
+            grid.innerHTML = coffeeData.map(bean => `
+                <div class="bg-white rounded-xl shadow-sm p-6 space-y-4">
+                    <img src="${bean.image}" alt="${bean.name}" class="w-full h-48 object-cover rounded-lg">
+                    <h3 class="text-lg font-semibold">${bean.name}</h3>
+                    <p class="text-gray-600">Origin: ${bean.origin}</p>
+                    <p class="text-gray-600">Roast: ${bean.roast}</p>
+                    <p class="text-xl font-medium">$${bean.price}</p>
+                    <button onclick="viewDetails(${bean.id})" class="w-full bg-[#6B4423] text-white px-6 py-2 rounded-lg hover:bg-[#5A371D] transition">View Details</button>
+                </div>
+            `).join('');
+        }
+
+        function viewDetails(id) {
+            const bean = coffeeData.find(b => b.id === id);
+            document.getElementById('beanDetail').innerHTML = `
+                <img src="${bean.image}" alt="${bean.name}" class="w-full h-64 object-cover rounded-lg">
+                <h2 class="text-2xl font-semibold">${bean.name}</h2>
+                <p class="text-gray-600">Origin: ${bean.origin}</p>
+                <p class="text-gray-600">Roast: ${bean.roast}</p>
+                <p class="text-xl font-medium">$${bean.price}</p>
+                <p class="text-gray-600">${bean.description}</p>
+            `;
+            showScreen('detail');
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const orderId = Math.random().toString(36).substr(2, 9).toUpperCase();
+            document.getElementById('orderId').textContent = orderId;
+            showScreen('confirmation');
+        });
+
+        // Search and filter functionality
+        document.getElementById('searchInput').addEventListener('input', filterBeans);
+        document.getElementById('originFilter').addEventListener('change', filterBeans);
+        document.getElementById('roastFilter').addEventListener('change', filterBeans);
+
+        function filterBeans() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const originFilter = document.getElementById('originFilter').value;
+            const roastFilter = document.getElementById('roastFilter').value;
+
+            const filtered = coffeeData.filter(bean => {
+                const matchesSearch = bean.name.toLowerCase().includes(searchTerm);
+                const matchesOrigin = !originFilter || bean.origin === originFilter;
+                const matchesRoast = !roastFilter || bean.roast === roastFilter;
+                return matchesSearch && matchesOrigin && matchesRoast;
+            });
+
+            const grid = document.getElementById('beanGrid');
+            grid.innerHTML = filtered.map(bean => `
+                <div class="bg-white rounded-xl shadow-sm p-6 space-y-4">
+                    <img src="${bean.image}" alt="${bean.name}" class="w-full h-48 object-cover rounded-lg">
+                    <h3 class="text-lg font-semibold">${bean.name}</h3>
+                    <p class="text-gray-600">Origin: ${bean.origin}</p>
+                    <p class="text-gray-600">Roast: ${bean.roast}</p>
+                    <p class="text-xl font-medium">$${bean.price}</p>
+                    <button onclick="viewDetails(${bean.id})" class="w-full bg-[#6B4423] text-white px-6 py-2 rounded-lg hover:bg-[#5A371D] transition">View Details</button>
+                </div>
+            `).join('');
+        }
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
